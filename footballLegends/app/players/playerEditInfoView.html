@@ -1,0 +1,56 @@
+<form name="playerForm" class="form-horizontal">
+	<fieldset>
+		<legend>Basic Player Info</legend>
+		<div class="form-group">
+			<label class="col-md-2 control-label" for="inputPlayerName">Player Name</label>
+			<div class="col-md-4">
+				<input class="form-control" id="inputPlayerName" type="text" placeholder="Player Name" ng-model="model.player.name" />
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-md-2 control-label" for="inputPlayerHeight">Height</label>
+			<div class="col-md-4">
+				<input class="form-control" id="inputPlayerHeight" type="text"  ng-model="model.player.height" ui-mask="9.99"/>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-md-2 control-label" for="inputPlayerGoals">Goals</label>
+			<div class="col-md-4">
+				<input class="form-control" id="inputPlayerGoals" type="text"  ng-model="model.player.goals" ui-mask="9?9?9"/>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-md-2 control-label" for="inputPlayerSalary">Salary</label>
+			<div class="col-md-4">
+				<input class="form-control" id="inputPlayerSalary" type="text"  ng-model="model.player.salary" ui-mask="9?9?9?9?9?9?9?9"/>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-md-2 control-label" for="inputPlayerDateofBirth">Date of Birth</label>
+			<div class="col-md-4">
+				<div class="input-group">
+					<input class="form-control" id="inputPlayerDateofBirth" type="text" datepicker-popup="dd/MM/yyyy" ng-model="model.player.dateOfBirth" is-open="model.opened"/>
+					<span class="input-group-btn">
+						<button class="btn btn-default" ng-click="model.open($event)">
+							<i class="glyphicon glyphicon-calendar" />
+						</button>
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-md-4 col-md-offset-2">
+				<span>
+					<button class="btn btn-primary" style="width:80px;margin-right:10px" ng-click="model.submit()">
+						Save
+					</button>
+				</span>
+				<span>
+					<button class="btn btn-default" style="width:70px" ng-click="model.cancel()">
+						Cancel
+					</button>
+				</span>
+			</div>
+		</div>
+	</fieldset>
+</form>

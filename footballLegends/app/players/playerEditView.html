@@ -1,0 +1,13 @@
+<div class="panel panel-primary">
+	<div class="panel-heading" style="font-size:large">
+		{{model.title}}
+	</div>
+	<div class="panel-body">
+		<div class="wizard">
+			<a ui-sref=".info" ui-sref-active="active"> Information </a>
+			<!--<a ui-sref=".teams" ui-sref-active="active"> Teams </a>-->
+			<a ui-sref=".skills" ui-sref-active="active"> Skills </a>
+		</div>
+		<div ui-view></div>
+	</div>
+</div>

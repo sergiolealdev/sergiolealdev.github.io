@@ -1,0 +1,38 @@
+<div class="panel panel-primary">
+	<div class="panel-heading"
+			style="font-size:large">Players List
+	</div>
+	<div class="panel-body">
+		<table class="table">
+			<thead>
+				<tr>
+					<td><button type="button"  class="btn btn-primary" ng-click="model.toggleImage()">{{model.showImage ? "Hide Player" : "Show Player"}}</td>
+					<td>Name</td>
+					<td>Height</td>
+					<td>Goals</td>
+					<td>Salary</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="player in model.players">
+					<td>
+						<img ng-show="model.showImage" ng-src="{{player.photoUrl}}"
+								style="width:50px; margin:2px"
+								title="{{player.name}}">
+					</td>
+					<td>
+						<a ui-sref="playerDetail({playerId: player.playerId})">			{{player.name}}
+						</a>
+					</td>
+					<td>{{player.height}}</td>
+					<td>{{player.goals}}</td>
+					<td>{{player.salary | currency: "€"}}</td>
+					<td>
+						<a class="btn btn-primary" ui-sref="playerEdit.info({playerId:player.playerId})">
+							Edit
+						</a>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>

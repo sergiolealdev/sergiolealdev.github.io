@@ -1,0 +1,53 @@
+<div class="panel panel-primary">
+	<div class="panel-heading" style="font-size:large">{{model.title}}</div>
+	<div class="panel-body">
+		<div class="row">
+			<div class="col-md-6">
+				<div class="row">
+					<div class="col-md-2">Name:</div>
+					<div class="col-md-6">{{model.player.name}}</div>
+				</div>
+				<div class="row">
+					<div class="col-md-2">Height:</div>
+					<div class="col-md-6">{{model.player.height}}</div>
+				</div>
+				<div class="row">
+					<div class="col-md-2">Goals:</div>
+					<div class="col-md-6">{{model.player.goals}}</div>
+				</div>
+				<div class="row">
+					<div class="col-md-2">Salary:</div>
+					<div class="col-md-6">{{model.player.salary | currency: "€"}}</div>
+				</div>
+				<div class="row">
+					<div class="col-md-2">DOB:</div>
+					<div class="col-md-6">{{model.player.dateOfBirth}}</div>
+				</div>
+				<div class="row">
+					<div class="col-md-2">Skills:</div>
+					<div class="col-md-6">
+						<ul ng-repeat="skill in model.player.skills">
+							<li>{{skill}} </li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<img class="center-block img-responsive" style="width:200px;margin:2px;" ng-src="{{model.player.photoUrl}}" title="{{model.player.name}}" />
+			</div>
+		</div>
+	</div>
+	<div class="panel-footer">
+		<a class="btn btn-default" 
+			ui-sref="playerList" 
+			style="width:80px">
+			<i class="glyphicon glyphicon-chevron-left"></i>
+			Back
+		</a>
+		<a class="btn btn-primary" 
+			ui-sref="playerEdit.info({playerId:model.player.playerId})" 
+			style="width:80px;margin-left:10px">
+			Edit
+		</a>
+	</div>
+</div>
