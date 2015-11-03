@@ -1,0 +1,158 @@
+(function(){
+var canvas  = document.getElementById('canvas');
+var context = canvas.getContext('2d'); 
+var counter = document.getElementById('counter');
+var timer   = document.getElementById('timer');
+var raquet  = document.getElementById("raquet");
+var bee     = document.getElementById("bee");
+var restart = document.getElementById("buttonRestart");
+
+var radius           = 20;
+var color            = "#0000ff";
+var x                = 50;  // initial horizontal position
+var y                = 50;  // initial vertical position
+var vx               = 2;  // initial horizontal speed
+var vy               = 2;  // initial vertical speed
+var cameraWidth      = 100;
+var cameraHeight     = 50;
+var changeDirection  = 50;
+var counterDirection = 0;
+var horizontalSpeed  = 10;
+var verticalSpeed    = 10;
+var catched          = 0;
+var time             = 10;
+var lastMousePos;
+
+window.onload = init; 
+ 
+function init() {
+	canvas.addEventListener('mousedown',stopAnim,false);
+	canvas.addEventListener('mouseup',startAnim,false);  
+	canvas.addEventListener('mousemove',function(evt) {
+		var mousePos = getMousePos(canvas, evt);
+		lastMousePos = mousePos;
+		drawFrame(mousePos);
+    }, false);
+	restart.addEventListener("click",function(){
+		start();
+	},false);
+	start();
+};
+
+function start(){
+	resetValues();
+	startAnim();
+}
+function startAnim() {
+	canvas.width          = window.innerWidth-100;
+	canvas.height         = window.innerHeight-100;
+	restart.style.display = 'none';
+	interval              = setInterval(onEachStep, 1000/60); // 60 fps
+}; 
+
+function resetValues() {
+	time              = 10;
+	catched           = 0;
+	counter.innerHTML = "Counter: " + catched;
+	timer.innerHTML   = "Time: " + time;
+}
+ 
+function stopAnim() {
+  clearInterval(interval);
+  checkCached();
+  counter.innerHTML = "Counter: " + catched;
+}; 
+
+function checkCached(){
+	var initialXCamera = lastMousePos.x - raquet.width/2;
+	var initialYCamera = lastMousePos.y - raquet.height/2;
+	var finalXCamera   = initialXCamera + raquet.width/2;;
+	var finalYCamera   = initialYCamera + raquet.height/2;
+	
+	if( x>initialXCamera && x<finalXCamera && 
+		y>initialYCamera && y<finalYCamera)
+	{
+		catched++;
+		flycached=true;
+	}
+};
+
+function setDirection(){
+	counterDirection = 0;
+	vx = (Math.random()-0.5)*horizontalSpeed; 
+	vy = (Math.random()-0.5)*verticalSpeed;  	
+};
+
+function onEachStep() {
+	if(counterDirection > changeDirection)
+		setDirection();
+	counterDirection++;
+	//drawFrame(); //Draw the camera
+	x += vx; // horizontal speed increases horizontal position 
+	y += vy; // vertical speed increases vertical position
+ 
+	checkBounds();
+	drawScreen();
+	timeDown();
+};
+
+function timeDown(){
+	time=time - 0.016;
+	timer.innerHTML="Time: " + Math.floor(time);
+	if(time<=1)
+	{
+		stopAnim();
+		canvas.removeEventListener('mouseup',startAnim,false); 
+		canvas.removeEventListener('mousedown',stopAnim,false); 
+		restart.style.display='';
+	}
+};
+
+function checkBounds(){
+	if (x > canvas.width-bee.width){ 
+		vx = -vx; 
+	}
+	if (x < 0){ 
+		vx = -vx;
+	}
+	
+	if (y > canvas.height - bee.height){ 
+		vy = -vy; 
+	}
+	
+	if (y < 0){ 
+		vy = -vy; 
+	}
+};
+
+function drawScreen() {
+    with (context){
+        clearRect(0, 0, canvas.width, canvas.height); 
+		drawImage(bee,x,y);
+		fillStyle = color;
+		strokeStyle = "blue";
+        //strokeRect(lastMousePos.x - cameraWidth/2,lastMousePos.y - cameraHeight/2,cameraWidth,cameraHeight);
+		drawImage(raquet,lastMousePos.x - raquet.width/2,lastMousePos.y - raquet.height/2);
+    };
+};
+
+function drawFrame(mousePos) {
+    with (context){
+		clearRect(0, 0, canvas.width, canvas.height); 
+        fillStyle = color;
+		strokeStyle = "blue";
+        //strokeRect(mousePos.x - cameraWidth/2,mousePos.y - cameraHeight/2,cameraWidth,cameraHeight);
+		drawImage(bee,x,y);
+		drawImage(raquet,mousePos.x - raquet.width/2,mousePos.y - raquet.height/2);
+		
+    };
+};
+
+function getMousePos(canvas, evt) {
+	var rect = canvas.getBoundingClientRect();
+	return {
+	  x: evt.clientX - rect.left,
+	  y: evt.clientY - rect.top
+	};
+};
+})();
