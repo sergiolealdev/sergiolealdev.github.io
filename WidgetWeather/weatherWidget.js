@@ -1,7 +1,7 @@
 var appWidgetWeather = angular.module('appWidgetWeather',[])
     .directive('weatherWidget', function () {
       return {
-        restrict: 'E', replace: true,
+        restrict: 'E',
         scope: {
           city: '@',
           forecast: '@'
