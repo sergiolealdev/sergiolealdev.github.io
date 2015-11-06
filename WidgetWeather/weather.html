@@ -1,0 +1,30 @@
+<div ng-controller="WeatherCtrl">
+  <div class="container">
+    <h5>Weather {{city}}</h5>
+
+    <div class="row">
+      <div class="col-md-3">
+      <h5 style="color:#009998">Today {{date}}</h5>
+        <div style="float:left"><img style="width:50px;height: 50px;" ng-src="{{ imgurl }}"></div>
+        <h5>Actuel: {{ weather.temp.current | temp:1 }}</h5>
+        <h6 style="color:#005580">min: {{ weather.temp.min | temp }}, max: {{ weather.temp.max | temp }}</h6>
+        <h6 style="color:#005580">Humidity: {{ weather.humidity }} %</h6>
+        <h6 style="color:#005580">Pressure: {{ weather.pressure }} mmHg</h6>
+        <h6 style="color:#005580">Wind speed: {{ weather.wind.speed }} m/s</h6>
+      </div>
+      <div ng-if="isForecast">
+        <div ng-repeat="day in forecastDays">
+          <div class="col-md-3">
+            <h5 style="color:#009998">{{day.date}} à {{day.hour}}</h5>
+            <div style="float:left"><img style="width:50px;height: 50px;" ng-src="{{ day.imgurl }}"></div>
+            <h5>Actuel: {{ day.temp.current | temp:1 }}</h5>
+            <h6 style="color:#005580">min: {{ day.temp.min | temp }}, max: {{ day.temp.max | temp }}</h6>
+            <h6 style="color:#005580">Humidity: {{ day.humidity }} %</h6>
+            <h6 style="color:#005580">Pressure: {{ day.pressure }} mmHg</h6>
+            <h6 style="color:#005580">Vitesse vent: {{ day.wind.speed }} m/s</h6>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
