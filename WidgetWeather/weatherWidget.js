@@ -113,7 +113,7 @@ var appWidgetWeather = angular.module('appWidgetWeather',[])
       }
 
       function fillDate(date){
-        var days = ['Dimanche','Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+        var days = ['Sunday','Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
         return days[date.getDay()] + ", " + date.getDate();
       }
 

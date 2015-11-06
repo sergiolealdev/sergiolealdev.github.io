@@ -6,7 +6,7 @@
       <div class="col-md-3">
       <h5 style="color:#009998">Today {{date}}</h5>
         <div style="float:left"><img style="width:50px;height: 50px;" ng-src="{{ imgurl }}"></div>
-        <h5>Actuel: {{ weather.temp.current | temp:1 }}</h5>
+        <h5>Current: {{ weather.temp.current | temp:1 }}</h5>
         <h6 style="color:#005580">min: {{ weather.temp.min | temp }}, max: {{ weather.temp.max | temp }}</h6>
         <h6 style="color:#005580">Humidity: {{ weather.humidity }} %</h6>
         <h6 style="color:#005580">Pressure: {{ weather.pressure }} mmHg</h6>
