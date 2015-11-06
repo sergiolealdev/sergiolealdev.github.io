@@ -20,7 +20,7 @@ var appWidgetWeather = angular.module('appWidgetWeather',[])
       function getWeather(city) {
         var defer = $q.defer();
         var url = "http://api.openweathermap.org/data/2.5/find?q=" + city + ",fr&units=metric&appid=265c6a6f6256191b246b6846c8472dc8&callback=JSON_CALLBACK";
-        //var url= "./weather.json?callback=JSON_CALLBACK";
+        //var url = 'weather.json?callback=JSON_CALLBACK';
         $http.jsonp(url)
             .success(function (data) {
               defer.resolve(data);
@@ -36,7 +36,7 @@ var appWidgetWeather = angular.module('appWidgetWeather',[])
       function getForecast(city) {
         var defer = $q.defer();
         var url = "http://api.openweathermap.org/data/2.5/forecast?q=" + city + ",fr&units=metric&appid=265c6a6f6256191b246b6846c8472dc8&callback=JSON_CALLBACK";
-        //var url= "./forecast.json?callback=JSON_CALLBACK";
+        //var url = 'forecast.json?callback=JSON_CALLBACK';
         $http.jsonp(url)
             .success(function (data) {
               defer.resolve(data);
