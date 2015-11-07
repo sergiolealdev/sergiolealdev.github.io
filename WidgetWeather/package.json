@@ -8,7 +8,4 @@
   },
   "author": "Sergio Leal",
   "license": "ISC",
-  "dependencies": {
-    "angular": "^1.4.7"
-  }
-}
+ }

@@ -2,14 +2,21 @@
 <html>
 <head>
 	<title> Widget Weather for AngularJS </title>
-	<script type="text/javascript" src="./node_modules/angular/angular.js"></script>
-	<script type="text/javascript" src="./weatherWidget.js"></script>
+	<script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
+	<script type="text/javascript" src="bower_components/angular-translate/angular-translate.min.js"></script>
+	<script type="text/javascript" src=""></script>
+	<link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" src="weatherWidget.js"></script>
 	
 </head>
 <body>
 	<div ng-app="appWidgetWeather">
 		<div ng-controller="WeatherCtrl">
-			<weather-widget city="Valladolid" forecast="3"></weather-widget>
+			<weather-widget 
+					city="Valladolid" 
+					forecast="3"
+					language="es">
+			</weather-widget>
 		</div>
 	</div>
 </body>
