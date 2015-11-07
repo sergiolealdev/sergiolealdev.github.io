@@ -4,20 +4,58 @@
 	<title> Widget Weather for AngularJS </title>
 	<script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
 	<script type="text/javascript" src="bower_components/angular-translate/angular-translate.min.js"></script>
-	<script type="text/javascript" src=""></script>
+	<script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+	<script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 	<link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
 	<script type="text/javascript" src="weatherWidget.js"></script>
 	
 </head>
 <body>
-	<div ng-app="appWidgetWeather">
-		<div ng-controller="WeatherCtrl">
-			<weather-widget 
-					city="Valladolid" 
-					forecast="3"
-					language="es">
+	<div ng-app="appWidgetWeather" ng-controller="WeatherCtrl" class="container">
+		<div>
+			<div>
+				<weather-widget 
+				city="Valladolid" 
+				forecast="3"
+				language="es">
 			</weather-widget>
 		</div>
 	</div>
-</body>
-</html>
+	<div class"row">
+		<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#changeCityModal">
+			Change city
+		</button>
+		<!-- Modal -->
+		<div class="modal fade" id="changeCityModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title" id="myModalLabel">Change city</h4>
+					</div>
+					<div class="modal-body">
+						<input type="text" ng-model="cityToChange" />
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="changeCity(cityToChange)">Apply</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="dropdown">
+			<button class="btn btn-default dropdown-toggle" type="button" id="changelanguage" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+				Language
+				<span class="caret"></span>
+			</button>
+			<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+				<li ng-repeat="lang in languages">
+					<a href="#" ng-click="languageSelected(lang)">{{lang}}</a>
+					<li>
+					</ul>
+				</div>
+
+			</div>
+		</div>
+	</body>
+	</html>

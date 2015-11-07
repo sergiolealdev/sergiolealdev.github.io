@@ -1,48 +1,91 @@
 <div ng-controller="WeatherCtrl">
   <div class="container">
-    <div class="col-md-12">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h3><span class="label label-primary">Weather {{city}}</span></h3>
-        </div>
-        <div class="panel-body">
-          <div class="col-md-3">
-            <h5 style="color:#009998">Today {{date}}</h5>
-            <div class="text-centered">
-              <div class="row">
-                <div style="float:left"><img style="width:50px;height: 50px;" ng-src="{{ imgurl }}"></div>
-                <h5>Current: {{ weather.temp.current | temp:1 }}</h5>
-              </div>
-            </div>
-            <div class="row">
-              <h6 style="color:#005580">min: {{ weather.temp.min | temp }}, max: {{ weather.temp.max | temp }}</h6>
-              <h6 style="color:#005580">Humidity: {{ weather.humidity }} %</h6>
-              <h6 style="color:#005580">Pressure: {{ weather.pressure }} mmHg</h6>
-              <h6 style="color:#005580">Wind speed: {{ weather.wind.speed }} m/s</h6>
-            </div>
-          </div>
 
-          <div ng-if="isForecast">
-            <div ng-repeat="day in forecastDays">
-              <div class="col-md-3">
-                <h5 style="color:#009998">{{day.date}} à {{day.hour}}</h5>
-                <div class="text-centered">
-                  <div class="row">
-                    <div style="float:left"><img style="width:50px;height: 50px;" ng-src="{{ day.imgurl }}"></div>
-                    <h5>Current: {{ day.temp.current | temp:1 }}</h5>
-                  </div>
+    <div ng-if="error!==null">
+      {{error}}
+    </div>
+
+    <div ng-if="error===null">
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3><span class="label label-primary">{{'main.weather' | translate}} {{city}},{{country}}</span></h3>
+          </div>
+          <div class="panel-body">
+            <div class="col-xs-3">
+              <h5 style="color:#009998">{{'main.today' | translate}}  {{date}}</h5>
+              <div class="text-centered">
+                <div class="row">
+                  <div style="float:left"><img style="width:50px;height: 50px;" ng-src="{{ imgurl }}"></div>
+                  <h5>{{'main.current' | translate}}: <span class="badge">{{ weather.temp.current | temp }}</span></h5>
                 </div>
-                <h6 style="color:#005580">min: {{ day.temp.min | temp }}, max: {{ day.temp.max | temp }}</h6>
-                <h6 style="color:#005580">Humidity: {{ day.humidity }} %</h6>
-                <h6 style="color:#005580">Pressure: {{ day.pressure }} mmHg</h6>
-                <h6 style="color:#005580">Wind speed: {{ day.wind.speed }} m/s</h6>
+              </div>
+              <div class="row">
+                <ul class="list-group">
+                  <li class="list-group-item">
+                    <span class="badge">{{ weather.temp.min | temp }}</span>
+                    <span class="label label-primary">{{'main.min' | translate}}</span>
+                  </li>
+                  <li class="list-group-item">
+                    <span class="badge">{{ weather.temp.max | temp }}</span>
+                    <span class="label label-danger">{{'main.max' | translate}}</span>
+                  </li>
+                  <li class="list-group-item">
+                    <span class="badge">{{ weather.humidity }} %</span>
+                    <span class="label label-info">{{'main.humidity' | translate}}</span>
+                  </li>
+                  <li class="list-group-item">
+                    <span class="badge">{{ weather.pressure }} mmHg</span>
+                    <span class="label label-info">{{'main.pressure' | translate}}</span>
+                  </li>
+                  <li class="list-group-item">
+                    <span class="badge">{{ weather.wind.speed }} m/s</span>
+                    <span class="label label-info">{{'main.wind.speed' | translate}}</span>
+                  </li>
+                </ul>
+
               </div>
             </div>
-          </div>
 
+            <div ng-if="isForecast">
+              <div ng-repeat="day in forecastDays">
+                <div class="col-md-3">
+                  <h5 style="color:#009998">{{day.date}} à {{day.hour}}</h5>
+                  <div class="text-centered">
+                    <div class="row">
+                      <div style="float:left"><img style="width:50px;height: 50px;" ng-src="{{ day.imgurl }}"></div>
+                      <h5>{{ day.temp.current | temp:1 }}</h5>
+                    </div>
+                  </div>
+                  <ul class="list-group">
+                    <li class="list-group-item">
+                      <span class="badge">{{ day.temp.min | temp }}</span>
+                      <span class="label label-primary">{{'main.min' | translate}}</span>
+                    </li>
+                    <li class="list-group-item">
+                      <span class="badge">{{ day.temp.max | temp }}</span>
+                      <span class="label label-danger">{{'main.max' | translate}}</span>
+                    </li>
+                    <li class="list-group-item">
+                      <span class="badge">{{ day.humidity }} %</span>
+                      <span class="label label-info">{{'main.humidity' | translate}}</span>
+                    </li>
+                    <li class="list-group-item">
+                      <span class="badge">{{ day.pressure }} mmHg</span>
+                      <span class="label label-info">{{'main.pressure' | translate}}</span>
+                    </li>
+                    <li class="list-group-item">
+                      <span class="badge">{{ day.wind.speed }} m/s</span>
+                      <span class="label label-info">{{'main.wind.speed' | translate}}</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+          </div>
         </div>
       </div>
     </div>
-
   </div>
 </div>
