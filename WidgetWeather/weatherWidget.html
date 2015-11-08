@@ -2,18 +2,63 @@
   <div class="container">
 
     <div ng-if="error!==null">
-      {{error}}
-    </div>
-
-    <div ng-if="error===null">
-      <div class="col-md-12">
+     <div class="row">
+      <div class="col-md-12 col-xs-12">
         <div class="panel panel-default">
-          <div class="panel-heading">
-            <h3><span class="label label-primary">{{'main.weather' | translate}} {{city}},{{country}}</span></h3>
+          <div class="panel-heading clearfix">
+            <h5 class="panel-title pull-left" style="padding-top: 17.5px;"> {{error}}</h5>
+            <div class="btn-group pull-right" ng-if="demoActivated">
+              <form class="form-inline" role="form">
+                <div class="form-group">
+                  <input type="text" class="form-control" placeholder="Change city" ng-model="city">
+                  <button type="button" class="btn btn-primary" ng-click="changeCity(city)">Change City</button>
+                </div>
+                <div class="form-group">
+                  <div class="dropdown">
+                    <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Languages <span class="caret"></span></button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                      <li ng-repeat="lang in languages">
+                        <a href="#" ng-click="languageSelected(lang)">{{lang}}</a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div ng-if="error===null">
+    <div class="row">
+      <div class="col-md-12 col-xs-12">
+        <div class="panel panel-default">
+          <div class="panel-heading clearfix">
+            <h5 class="panel-title pull-left" style="padding-top: 17.5px;"><span class="label label-primary">{{'main.weather' | translate}} {{city}},{{country}}</span></h5>
+            <div class="btn-group pull-right" ng-if="demoActivated">
+              <form class="form-inline" role="form">
+                <div class="form-group">
+                  <input type="text" class="form-control" placeholder="Change city" ng-model="city">
+                  <button type="button" class="btn btn-primary" ng-click="changeCity(city)">Change City</button>
+                </div>
+                <div class="form-group">
+                  <div class="dropdown">
+                    <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Languages <span class="caret"></span></button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                      <li ng-repeat="lang in languages">
+                        <a href="#" ng-click="languageSelected(lang)">{{lang}}</a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </form>
+            </div>
           </div>
           <div class="panel-body">
-            <div class="col-xs-3">
-              <h5 style="color:#009998">{{'main.today' | translate}}  {{date}}</h5>
+            <div class="col-md-3">
+              <h5 style="color:#009998">{{'main.today' | translate}}  {{date | translate}}</h5>
               <div class="text-centered">
                 <div class="row">
                   <div style="float:left"><img style="width:50px;height: 50px;" ng-src="{{ imgurl }}"></div>
@@ -43,18 +88,17 @@
                     <span class="label label-info">{{'main.wind.speed' | translate}}</span>
                   </li>
                 </ul>
-
               </div>
             </div>
 
             <div ng-if="isForecast">
               <div ng-repeat="day in forecastDays">
                 <div class="col-md-3">
-                  <h5 style="color:#009998">{{day.date}} à {{day.hour}}</h5>
+                  <h5 style="color:#009998">{{day.date | translate}}  {{day.hour}}</h5>
                   <div class="text-centered">
                     <div class="row">
                       <div style="float:left"><img style="width:50px;height: 50px;" ng-src="{{ day.imgurl }}"></div>
-                      <h5>{{ day.temp.current | temp:1 }}</h5>
+                      <span class="badge">{{ day.temp.current | temp }}</span>
                     </div>
                   </div>
                   <ul class="list-group">
@@ -82,10 +126,10 @@
                 </div>
               </div>
             </div>
-
           </div>
         </div>
       </div>
     </div>
   </div>
+</div>
 </div>
