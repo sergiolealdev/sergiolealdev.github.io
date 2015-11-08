@@ -13,7 +13,7 @@ var appWeatherWidget = angular.module('appWeatherWidget',
       size        : '@'
     },
     controller: 'WeatherCtrl',
-    templateUrl: '../html/weatherWidget.html'
+    templateUrl: '/html/weatherWidget.html'
   };
 })
 .factory('weatherWidgetService', ['$http', '$q', function ($http, $q) {
