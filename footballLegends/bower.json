@@ -1,0 +1,32 @@
+{
+  "name": "footballlegends",
+  "description": "A simple CRUD app in AngularJS",
+  "main": "app.js",
+  "authors": [
+    "Sergio Leal"
+  ],
+  "license": "ISC",
+  "keywords": [
+    "football",
+    "legends",
+    "angularJS"
+  ],
+  "moduleType": [],
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-ui-mask": "~1.6.0",
+    "angular-mocks": "~1.4.7",
+    "angular-resource": "~1.4.7",
+    "angular-ui-router": "~0.2.15",
+    "bootstrap": "~3.3.5",
+    "jquery": "~2.1.4",
+    "angular-bootstrap": "~0.14.3"
+  }
+}
