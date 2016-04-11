@@ -1,0 +1,52 @@
+
+.main-text {
+	padding-bottom:30px;
+	font-size: 14px;
+	color : green;
+}
+
+.ulNoBullet
+{
+  list-style-type: none;
+}
+
+.grey-back{
+	background: #ccccb3;
+	padding:10px 300px 10px 10px;
+}
+
+.green-back{
+	background: #1f7a1f;
+	color:white;
+	padding:10px 300px 10px 10px;
+	
+
+}
+
+.footer{
+	padding-top:60px;
+}
+
+.main-bar{
+	background: #1f7a1f;	
+}
+
+.main-title{
+	color:white;
+}
+
+.main-links{
+	background: #cce6ff;	
+	color:blue;
+	float:none;
+}
+
+.main-links .link{
+	font-weight: bold;
+	color:blue !important;
+}
+
+.fineTitle{
+	font-weight: bold;
+	color:#004d99;
+}
