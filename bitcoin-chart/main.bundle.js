@@ -1,6 +1,6 @@
 webpackJsonp(["main"],{
 
-/***/ "../../../../../src/$$_gendir lazy recursive":
+/***/ "../../../../../src/$$_lazy_route_resource lazy recursive":
 /***/ (function(module, exports) {
 
 function webpackEmptyAsyncContext(req) {
@@ -13,7 +13,7 @@ function webpackEmptyAsyncContext(req) {
 webpackEmptyAsyncContext.keys = function() { return []; };
 webpackEmptyAsyncContext.resolve = webpackEmptyAsyncContext;
 module.exports = webpackEmptyAsyncContext;
-webpackEmptyAsyncContext.id = "../../../../../src/$$_gendir lazy recursive";
+webpackEmptyAsyncContext.id = "../../../../../src/$$_lazy_route_resource lazy recursive";
 
 /***/ }),
 
@@ -38,7 +38,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/app.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div>\n  <h1 class=\"title\">\n    USD/BITCOIN\n  </h1>\n  <div class=\"container\">\n    <div class=\"yesterdayValue\">\n        Value yesterday <span class=\"pill\">{{yesterdayValue | number:'3.2-2'}}</span>\n    </div>\n    <div class=\"currentValue\">\n      Current value <span class=\"pill\">{{currentValue}}</span>\n    </div>\n    <div class=\"variation\" *ngIf=\"variation\" [ngClass]=\"{'positive': positiveVariation, 'negative': !positiveVariation}\">\n      {{variation | number:'1.2-2'}}% <i *ngIf=\"positiveVariation\" class=\"fa fa-caret-up fa-lg\" aria-hidden=\"true\"></i>\n            <i *ngIf=\"!positiveVariation\" class=\"fa fa-caret-down fa-lg\" aria-hidden=\"true\"></i>\n    </div>\n  </div>\n  <canvas class=\"chart\" \n          baseChart [datasets]=\"lineChartData\" \n          [labels]=\"lineChartLabels\" \n          [options]=\"lineChartOptions\" \n          [colors]=\"lineChartColors\"\n          [legend]=\"lineChartLegend\" \n          [chartType]=\"lineChartType\" \n          (chartHover)=\"chartHovered($event)\" \n          (chartClick)=\"chartClicked($event)\">\n  </canvas>\n  \n</div>        "
+module.exports = "<div class=\"container\">\r\n  <h1 class=\"title\">\r\n    USD/BITCOIN\r\n  </h1>\r\n  <div class=\"yesterdayValue\">\r\n      Value yesterday <span class=\"pill\">{{yesterdayValue | number:'3.2-2'}}</span>\r\n  </div>\r\n  <div class=\"currentValue\">\r\n    Current value <span class=\"pill\">{{currentValue}}</span>\r\n  </div>\r\n  <div class=\"variation\" *ngIf=\"variation\" [ngClass]=\"{'positive': positiveVariation, 'negative': !positiveVariation}\">\r\n    {{variation | number:'1.2-2'}}% <i *ngIf=\"positiveVariation\" class=\"fa fa-caret-up fa-lg\" aria-hidden=\"true\"></i>\r\n          <i *ngIf=\"!positiveVariation\" class=\"fa fa-caret-down fa-lg\" aria-hidden=\"true\"></i>\r\n  </div>\r\n  <canvas class=\"chart\"\r\n          baseChart [datasets]=\"lineChartData\"\r\n          [labels]=\"lineChartLabels\"\r\n          [options]=\"lineChartOptions\"\r\n          [colors]=\"lineChartColors\"\r\n          [legend]=\"lineChartLegend\"\r\n          [chartType]=\"lineChartType\"\r\n          (chartHover)=\"chartHovered($event)\"\r\n          (chartClick)=\"chartClicked($event)\">\r\n  </canvas>\r\n\r\n</div>\r\n"
 
 /***/ }),
 
@@ -47,14 +47,12 @@ module.exports = "<div>\n  <h1 class=\"title\">\n    USD/BITCOIN\n  </h1>\n  <di
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppComponent; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/@angular/core.es5.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/esm5/core.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__app_services_bitcoin_service__ = __webpack_require__("../../../../../src/app/services/bitcoin.service.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map__ = __webpack_require__("../../../../rxjs/add/operator/map.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map__ = __webpack_require__("../../../../rxjs/_esm5/add/operator/map.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_moment__ = __webpack_require__("../../../../moment/moment.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_moment___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_moment__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_Rx__ = __webpack_require__("../../../../rxjs/Rx.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_Rx___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_rxjs_Rx__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_Rx__ = __webpack_require__("../../../../rxjs/_esm5/Rx.js");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -115,7 +113,7 @@ var AppComponent = (function () {
     };
     AppComponent.prototype.activateTimer = function () {
         var _this = this;
-        var source = __WEBPACK_IMPORTED_MODULE_4_rxjs_Rx__["Observable"]
+        var source = __WEBPACK_IMPORTED_MODULE_4_rxjs_Rx__["a" /* Observable */]
             .interval(this.timer)
             .timeInterval();
         var subscription = source.subscribe(function (val) {
@@ -159,19 +157,18 @@ var AppComponent = (function () {
     AppComponent.prototype.chartHovered = function (e) {
         //    console.log(e);
     };
+    AppComponent = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
+            selector: 'app-root',
+            template: __webpack_require__("../../../../../src/app/app.component.html"),
+            styles: [__webpack_require__("../../../../../src/app/app.component.css")]
+        }),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__app_services_bitcoin_service__["a" /* BitcoinService */]])
+    ], AppComponent);
     return AppComponent;
 }());
-AppComponent = __decorate([
-    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
-        selector: 'app-root',
-        template: __webpack_require__("../../../../../src/app/app.component.html"),
-        styles: [__webpack_require__("../../../../../src/app/app.component.css")]
-    }),
-    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__app_services_bitcoin_service__["a" /* BitcoinService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__app_services_bitcoin_service__["a" /* BitcoinService */]) === "function" && _a || Object])
-], AppComponent);
 
-var _a;
-//# sourceMappingURL=app.component.js.map
+
 
 /***/ }),
 
@@ -180,9 +177,9 @@ var _a;
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppModule; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__ = __webpack_require__("../../../platform-browser/@angular/platform-browser.es5.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__("../../../core/@angular/core.es5.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_http__ = __webpack_require__("../../../http/@angular/http.es5.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__ = __webpack_require__("../../../platform-browser/esm5/platform-browser.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__("../../../core/esm5/core.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_http__ = __webpack_require__("../../../http/esm5/http.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_ng2_charts__ = __webpack_require__("../../../../ng2-charts/index.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_ng2_charts___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_ng2_charts__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__app_component__ = __webpack_require__("../../../../../src/app/app.component.ts");
@@ -202,24 +199,24 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var AppModule = (function () {
     function AppModule() {
     }
+    AppModule = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["NgModule"])({
+            declarations: [
+                __WEBPACK_IMPORTED_MODULE_4__app_component__["a" /* AppComponent */],
+            ],
+            imports: [
+                __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__["a" /* BrowserModule */],
+                __WEBPACK_IMPORTED_MODULE_2__angular_http__["b" /* HttpModule */],
+                __WEBPACK_IMPORTED_MODULE_3_ng2_charts__["ChartsModule"]
+            ],
+            providers: [__WEBPACK_IMPORTED_MODULE_5__services_bitcoin_service__["a" /* BitcoinService */]],
+            bootstrap: [__WEBPACK_IMPORTED_MODULE_4__app_component__["a" /* AppComponent */]]
+        })
+    ], AppModule);
     return AppModule;
 }());
-AppModule = __decorate([
-    Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["NgModule"])({
-        declarations: [
-            __WEBPACK_IMPORTED_MODULE_4__app_component__["a" /* AppComponent */],
-        ],
-        imports: [
-            __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__["a" /* BrowserModule */],
-            __WEBPACK_IMPORTED_MODULE_2__angular_http__["b" /* HttpModule */],
-            __WEBPACK_IMPORTED_MODULE_3_ng2_charts__["ChartsModule"]
-        ],
-        providers: [__WEBPACK_IMPORTED_MODULE_5__services_bitcoin_service__["a" /* BitcoinService */]],
-        bootstrap: [__WEBPACK_IMPORTED_MODULE_4__app_component__["a" /* AppComponent */]]
-    })
-], AppModule);
 
-//# sourceMappingURL=app.module.js.map
+
 
 /***/ }),
 
@@ -228,8 +225,8 @@ AppModule = __decorate([
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return BitcoinService; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/@angular/core.es5.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_http__ = __webpack_require__("../../../http/@angular/http.es5.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/esm5/core.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_http__ = __webpack_require__("../../../http/esm5/http.js");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -255,15 +252,14 @@ var BitcoinService = (function () {
         return this.http.get(url)
             .map(function (res) { return res.json(); });
     };
+    BitcoinService = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__angular_http__["a" /* Http */]])
+    ], BitcoinService);
     return BitcoinService;
 }());
-BitcoinService = __decorate([
-    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(),
-    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_http__["a" /* Http */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__angular_http__["a" /* Http */]) === "function" && _a || Object])
-], BitcoinService);
 
-var _a;
-//# sourceMappingURL=bitcoin.service.js.map
+
 
 /***/ }),
 
@@ -275,7 +271,7 @@ var _a;
 var environment = {
     production: true
 };
-//# sourceMappingURL=environment.js.map
+
 
 /***/ }),
 
@@ -284,8 +280,8 @@ var environment = {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/@angular/core.es5.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_platform_browser_dynamic__ = __webpack_require__("../../../platform-browser-dynamic/@angular/platform-browser-dynamic.es5.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/esm5/core.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_platform_browser_dynamic__ = __webpack_require__("../../../platform-browser-dynamic/esm5/platform-browser-dynamic.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__app_app_module__ = __webpack_require__("../../../../../src/app/app.module.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__environments_environment__ = __webpack_require__("../../../../../src/environments/environment.ts");
 
@@ -297,7 +293,7 @@ if (__WEBPACK_IMPORTED_MODULE_3__environments_environment__["a" /* environment *
 }
 Object(__WEBPACK_IMPORTED_MODULE_1__angular_platform_browser_dynamic__["a" /* platformBrowserDynamic */])().bootstrapModule(__WEBPACK_IMPORTED_MODULE_2__app_app_module__["a" /* AppModule */])
     .catch(function (err) { return console.log(err); });
-//# sourceMappingURL=main.js.map
+
 
 /***/ }),
 
