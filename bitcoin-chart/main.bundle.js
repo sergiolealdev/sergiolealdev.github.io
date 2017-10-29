@@ -38,7 +38,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/app.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<!--The content below is only a placeholder and can be replaced.-->\r\n<div style=\"text-align:center\">\r\n  <h1>\r\n    USD/BITCOIN\r\n  </h1>\r\n  <div style=\"display: block;\">\r\n  <canvas baseChart width=\"400\" height=\"400\"\r\n          [datasets]=\"lineChartData\"\r\n          [labels]=\"lineChartLabels\"\r\n          [options]=\"lineChartOptions\"\r\n          [colors]=\"lineChartColors\"\r\n          [legend]=\"lineChartLegend\"\r\n          [chartType]=\"lineChartType\"\r\n          (chartHover)=\"chartHovered($event)\"\r\n          (chartClick)=\"chartClicked($event)\"></canvas>\r\n  </div>\r\n\r\n</div>\r\n"
+module.exports = "<!--The content below is only a placeholder and can be replaced.-->\r\n<div style=\"text-align:center\">\r\n  <h1>\r\n    USD/BITCOIN\r\n  </h1>\r\n  <div id=\"currentValue\">\r\n\r\n    {{currentValue}}---{{variation}}\r\n\r\n\r\n  </div>\r\n  <canvas baseChart width=\"1000\" height=\"400\"\r\n          [datasets]=\"lineChartData\"\r\n          [labels]=\"lineChartLabels\"\r\n          [options]=\"lineChartOptions\"\r\n          [colors]=\"lineChartColors\"\r\n          [legend]=\"lineChartLegend\"\r\n          [chartType]=\"lineChartType\"\r\n          (chartHover)=\"chartHovered($event)\"\r\n          (chartClick)=\"chartClicked($event)\"></canvas>\r\n  \r\n\r\n</div>\r\n"
 
 /***/ }),
 
@@ -48,7 +48,7 @@ module.exports = "<!--The content below is only a placeholder and can be replace
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppComponent; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/@angular/core.es5.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_http__ = __webpack_require__("../../../http/@angular/http.es5.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__app_services_bitcoin_service__ = __webpack_require__("../../../../../src/app/services/bitcoin.service.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map__ = __webpack_require__("../../../../rxjs/add/operator/map.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_Rx__ = __webpack_require__("../../../../rxjs/Rx.js");
@@ -67,8 +67,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 var AppComponent = (function () {
-    function AppComponent(http) {
-        this.http = http;
+    function AppComponent(bitcoinService) {
+        this.bitcoinService = bitcoinService;
+        this.timer = 5 * 1000; /* ms */
+        this.arrayValues = [];
         this.lineChartColors = [
             {
                 backgroundColor: 'red',
@@ -95,39 +97,67 @@ var AppComponent = (function () {
         ];
     }
     AppComponent.prototype.ngOnInit = function () {
+        this.getHistoric();
+        this.getCurrent();
+    };
+    AppComponent.prototype.getCurrent = function () {
         var _this = this;
         var source = __WEBPACK_IMPORTED_MODULE_3_rxjs_Rx__["Observable"]
-            .interval(5 * 1000 /* ms */)
+            .interval(this.timer)
             .timeInterval();
-        var myarray = [];
-        var arrayValues = [];
         var subscription = source.subscribe(function (val) {
-            _this.http.get('https://api.coindesk.com/v1/bpi/currentprice.json')
-                .map(function (res) { return res.json(); })
-                .subscribe(function (data) {
-                console.log("val:" + val.value);
-                myarray.push(val.value + "");
-                var _lineChartData = new Array(val.value + 1);
-                arrayValues.push(parseFloat(data.bpi.USD.rate.replace(",", "")));
-                var date = new Date();
-                _lineChartData[0] = { data: new Array(val.value + 1), label: "USD/BitCoin " + date.toDateString() };
-                for (var i = 0; i < arrayValues.length; i++) {
-                    _lineChartData[0].data[i] = arrayValues[i];
-                }
-                _this.lineChartData = _lineChartData;
-                _this.lineChartLabels.push(date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds());
-                console.log(_this.lineChartData);
-                console.log(_this.lineChartLabels);
+            _this.bitcoinService.getCurrentValue().subscribe(function (data) {
+                _this.updateChart(data, val);
+                _this.updateBpiValue(data);
             });
         });
     };
+    AppComponent.prototype.getHistoric = function () {
+        this.bitcoinService.getHistoric().subscribe(function (data) {
+            /*const _lineChartData: Array<any> = new Array(val.value + 1);
+            arrayValues.push(parseFloat(data.bpi.USD.rate.replace(",", "")));
+            const date = new Date();
+            _lineChartData[0] = {data: new Array(val.value + 1), label: "BitCoin/USD  " + date.toDateString()};
+            for (let i = 0; i < arrayValues.length; i++) {
+              _lineChartData[0].data[i] = arrayValues[i];
+            }
+            this.lineChartData = _lineChartData;
+    
+            this.lineChartLabels.push(date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds());
+            */
+            //        console.log("££££££££££££££££££££££££££££££££££££££££££££££££££££££");
+            //        console.log(data.bpi);
+        });
+    };
+    AppComponent.prototype.updateChart = function (data, val) {
+        var _lineChartData = new Array(val.value + 1);
+        this.arrayValues.push(this.getFloatValue(data));
+        var date = new Date();
+        _lineChartData[0] = { data: new Array(val.value + 1), label: "BitCoin/USD  " + date.toDateString() };
+        for (var i = 0; i < this.arrayValues.length; i++) {
+            _lineChartData[0].data[i] = this.arrayValues[i];
+        }
+        this.lineChartData = _lineChartData;
+        this.lineChartLabels.push(date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds());
+    };
+    AppComponent.prototype.updateBpiValue = function (data) {
+        this.currentValue = this.getFloatValue(data);
+        var lastValue = this.arrayValues[this.arrayValues.length - 2];
+        var change = this.currentValue / lastValue;
+        if (change !== 1) {
+            this.variation = change;
+        }
+    };
+    AppComponent.prototype.getFloatValue = function (data) {
+        return parseFloat(data.USD.last);
+    };
     // Chart events
     AppComponent.prototype.chartClicked = function (e) {
-        console.log(e);
+        //    console.log(e);
     };
     // Chart events
     AppComponent.prototype.chartHovered = function (e) {
-        console.log(e);
+        //    console.log(e);
     };
     return AppComponent;
 }());
@@ -137,7 +167,7 @@ AppComponent = __decorate([
         template: __webpack_require__("../../../../../src/app/app.component.html"),
         styles: [__webpack_require__("../../../../../src/app/app.component.css")]
     }),
-    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_http__["a" /* Http */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__angular_http__["a" /* Http */]) === "function" && _a || Object])
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__app_services_bitcoin_service__["a" /* BitcoinService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__app_services_bitcoin_service__["a" /* BitcoinService */]) === "function" && _a || Object])
 ], AppComponent);
 
 var _a;
@@ -156,13 +186,15 @@ var _a;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_ng2_charts__ = __webpack_require__("../../../../ng2-charts/index.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_ng2_charts___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_ng2_charts__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__app_component__ = __webpack_require__("../../../../../src/app/app.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__commons_spinner_spinner__ = __webpack_require__("../../../../../src/app/commons/spinner/spinner.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__services_bitcoin_service__ = __webpack_require__("../../../../../src/app/services/bitcoin.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__commons_spinner_spinner__ = __webpack_require__("../../../../../src/app/commons/spinner/spinner.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+
 
 
 
@@ -178,14 +210,14 @@ AppModule = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["NgModule"])({
         declarations: [
             __WEBPACK_IMPORTED_MODULE_4__app_component__["a" /* AppComponent */],
-            __WEBPACK_IMPORTED_MODULE_5__commons_spinner_spinner__["a" /* SpinnerComponent */]
+            __WEBPACK_IMPORTED_MODULE_6__commons_spinner_spinner__["a" /* SpinnerComponent */]
         ],
         imports: [
             __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__["a" /* BrowserModule */],
             __WEBPACK_IMPORTED_MODULE_2__angular_http__["b" /* HttpModule */],
             __WEBPACK_IMPORTED_MODULE_3_ng2_charts__["ChartsModule"]
         ],
-        providers: [],
+        providers: [__WEBPACK_IMPORTED_MODULE_5__services_bitcoin_service__["a" /* BitcoinService */]],
         bootstrap: [__WEBPACK_IMPORTED_MODULE_4__app_component__["a" /* AppComponent */]]
     })
 ], AppModule);
@@ -242,18 +274,64 @@ SpinnerComponent = __decorate([
 
 /***/ }),
 
+/***/ "../../../../../src/app/services/bitcoin.service.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return BitcoinService; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/@angular/core.es5.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_http__ = __webpack_require__("../../../http/@angular/http.es5.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_moment__ = __webpack_require__("../../../../moment/moment.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_moment___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_moment__);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+var BitcoinService = (function () {
+    function BitcoinService(http) {
+        this.http = http;
+    }
+    BitcoinService.prototype.getCurrentValue = function () {
+        //this.http.get('https://api.coindesk.com/v1/bpi/currentprice.json')
+        return this.http.get('https://blockchain.info/ticker')
+            .map(function (res) { return res.json(); });
+    };
+    BitcoinService.prototype.getHistoric = function () {
+        var now = __WEBPACK_IMPORTED_MODULE_2_moment__(); // add this 2 of 4
+        var url = 'https://api.coindesk.com/v1/bpi/historical/close.json?start=' + now.subtract(30, 'days') + '&end='
+            + now;
+        var url2 = 'https://api.coindesk.com/v1/bpi/historical/close.json?start=2017-10-01&end=2017-10-26';
+        //        console.log(url);
+        return this.http.get(url2)
+            .map(function (res) { return res.json(); });
+    };
+    return BitcoinService;
+}());
+BitcoinService = __decorate([
+    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(),
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_http__["a" /* Http */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__angular_http__["a" /* Http */]) === "function" && _a || Object])
+], BitcoinService);
+
+var _a;
+//# sourceMappingURL=bitcoin.service.js.map
+
+/***/ }),
+
 /***/ "../../../../../src/environments/environment.ts":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return environment; });
-// The file contents for the current environment will overwrite these during build.
-// The build system defaults to the dev environment which uses `environment.ts`, but if you do
-// `ng build --env=prod` then `environment.prod.ts` will be used instead.
-// The list of which env maps to which file can be found in `.angular-cli.json`.
-// The file contents for the current environment will overwrite these during build.
 var environment = {
-    production: false
+    production: true
 };
 //# sourceMappingURL=environment.js.map
 
@@ -278,6 +356,259 @@ if (__WEBPACK_IMPORTED_MODULE_3__environments_environment__["a" /* environment *
 Object(__WEBPACK_IMPORTED_MODULE_1__angular_platform_browser_dynamic__["a" /* platformBrowserDynamic */])().bootstrapModule(__WEBPACK_IMPORTED_MODULE_2__app_app_module__["a" /* AppModule */])
     .catch(function (err) { return console.log(err); });
 //# sourceMappingURL=main.js.map
+
+/***/ }),
+
+/***/ "../../../../chart.js/node_modules/moment/locale recursive ^\\.\\/.*$":
+/***/ (function(module, exports, __webpack_require__) {
+
+var map = {
+	"./af": "../../../../chart.js/node_modules/moment/locale/af.js",
+	"./af.js": "../../../../chart.js/node_modules/moment/locale/af.js",
+	"./ar": "../../../../chart.js/node_modules/moment/locale/ar.js",
+	"./ar-dz": "../../../../chart.js/node_modules/moment/locale/ar-dz.js",
+	"./ar-dz.js": "../../../../chart.js/node_modules/moment/locale/ar-dz.js",
+	"./ar-kw": "../../../../chart.js/node_modules/moment/locale/ar-kw.js",
+	"./ar-kw.js": "../../../../chart.js/node_modules/moment/locale/ar-kw.js",
+	"./ar-ly": "../../../../chart.js/node_modules/moment/locale/ar-ly.js",
+	"./ar-ly.js": "../../../../chart.js/node_modules/moment/locale/ar-ly.js",
+	"./ar-ma": "../../../../chart.js/node_modules/moment/locale/ar-ma.js",
+	"./ar-ma.js": "../../../../chart.js/node_modules/moment/locale/ar-ma.js",
+	"./ar-sa": "../../../../chart.js/node_modules/moment/locale/ar-sa.js",
+	"./ar-sa.js": "../../../../chart.js/node_modules/moment/locale/ar-sa.js",
+	"./ar-tn": "../../../../chart.js/node_modules/moment/locale/ar-tn.js",
+	"./ar-tn.js": "../../../../chart.js/node_modules/moment/locale/ar-tn.js",
+	"./ar.js": "../../../../chart.js/node_modules/moment/locale/ar.js",
+	"./az": "../../../../chart.js/node_modules/moment/locale/az.js",
+	"./az.js": "../../../../chart.js/node_modules/moment/locale/az.js",
+	"./be": "../../../../chart.js/node_modules/moment/locale/be.js",
+	"./be.js": "../../../../chart.js/node_modules/moment/locale/be.js",
+	"./bg": "../../../../chart.js/node_modules/moment/locale/bg.js",
+	"./bg.js": "../../../../chart.js/node_modules/moment/locale/bg.js",
+	"./bn": "../../../../chart.js/node_modules/moment/locale/bn.js",
+	"./bn.js": "../../../../chart.js/node_modules/moment/locale/bn.js",
+	"./bo": "../../../../chart.js/node_modules/moment/locale/bo.js",
+	"./bo.js": "../../../../chart.js/node_modules/moment/locale/bo.js",
+	"./br": "../../../../chart.js/node_modules/moment/locale/br.js",
+	"./br.js": "../../../../chart.js/node_modules/moment/locale/br.js",
+	"./bs": "../../../../chart.js/node_modules/moment/locale/bs.js",
+	"./bs.js": "../../../../chart.js/node_modules/moment/locale/bs.js",
+	"./ca": "../../../../chart.js/node_modules/moment/locale/ca.js",
+	"./ca.js": "../../../../chart.js/node_modules/moment/locale/ca.js",
+	"./cs": "../../../../chart.js/node_modules/moment/locale/cs.js",
+	"./cs.js": "../../../../chart.js/node_modules/moment/locale/cs.js",
+	"./cv": "../../../../chart.js/node_modules/moment/locale/cv.js",
+	"./cv.js": "../../../../chart.js/node_modules/moment/locale/cv.js",
+	"./cy": "../../../../chart.js/node_modules/moment/locale/cy.js",
+	"./cy.js": "../../../../chart.js/node_modules/moment/locale/cy.js",
+	"./da": "../../../../chart.js/node_modules/moment/locale/da.js",
+	"./da.js": "../../../../chart.js/node_modules/moment/locale/da.js",
+	"./de": "../../../../chart.js/node_modules/moment/locale/de.js",
+	"./de-at": "../../../../chart.js/node_modules/moment/locale/de-at.js",
+	"./de-at.js": "../../../../chart.js/node_modules/moment/locale/de-at.js",
+	"./de-ch": "../../../../chart.js/node_modules/moment/locale/de-ch.js",
+	"./de-ch.js": "../../../../chart.js/node_modules/moment/locale/de-ch.js",
+	"./de.js": "../../../../chart.js/node_modules/moment/locale/de.js",
+	"./dv": "../../../../chart.js/node_modules/moment/locale/dv.js",
+	"./dv.js": "../../../../chart.js/node_modules/moment/locale/dv.js",
+	"./el": "../../../../chart.js/node_modules/moment/locale/el.js",
+	"./el.js": "../../../../chart.js/node_modules/moment/locale/el.js",
+	"./en-au": "../../../../chart.js/node_modules/moment/locale/en-au.js",
+	"./en-au.js": "../../../../chart.js/node_modules/moment/locale/en-au.js",
+	"./en-ca": "../../../../chart.js/node_modules/moment/locale/en-ca.js",
+	"./en-ca.js": "../../../../chart.js/node_modules/moment/locale/en-ca.js",
+	"./en-gb": "../../../../chart.js/node_modules/moment/locale/en-gb.js",
+	"./en-gb.js": "../../../../chart.js/node_modules/moment/locale/en-gb.js",
+	"./en-ie": "../../../../chart.js/node_modules/moment/locale/en-ie.js",
+	"./en-ie.js": "../../../../chart.js/node_modules/moment/locale/en-ie.js",
+	"./en-nz": "../../../../chart.js/node_modules/moment/locale/en-nz.js",
+	"./en-nz.js": "../../../../chart.js/node_modules/moment/locale/en-nz.js",
+	"./eo": "../../../../chart.js/node_modules/moment/locale/eo.js",
+	"./eo.js": "../../../../chart.js/node_modules/moment/locale/eo.js",
+	"./es": "../../../../chart.js/node_modules/moment/locale/es.js",
+	"./es-do": "../../../../chart.js/node_modules/moment/locale/es-do.js",
+	"./es-do.js": "../../../../chart.js/node_modules/moment/locale/es-do.js",
+	"./es.js": "../../../../chart.js/node_modules/moment/locale/es.js",
+	"./et": "../../../../chart.js/node_modules/moment/locale/et.js",
+	"./et.js": "../../../../chart.js/node_modules/moment/locale/et.js",
+	"./eu": "../../../../chart.js/node_modules/moment/locale/eu.js",
+	"./eu.js": "../../../../chart.js/node_modules/moment/locale/eu.js",
+	"./fa": "../../../../chart.js/node_modules/moment/locale/fa.js",
+	"./fa.js": "../../../../chart.js/node_modules/moment/locale/fa.js",
+	"./fi": "../../../../chart.js/node_modules/moment/locale/fi.js",
+	"./fi.js": "../../../../chart.js/node_modules/moment/locale/fi.js",
+	"./fo": "../../../../chart.js/node_modules/moment/locale/fo.js",
+	"./fo.js": "../../../../chart.js/node_modules/moment/locale/fo.js",
+	"./fr": "../../../../chart.js/node_modules/moment/locale/fr.js",
+	"./fr-ca": "../../../../chart.js/node_modules/moment/locale/fr-ca.js",
+	"./fr-ca.js": "../../../../chart.js/node_modules/moment/locale/fr-ca.js",
+	"./fr-ch": "../../../../chart.js/node_modules/moment/locale/fr-ch.js",
+	"./fr-ch.js": "../../../../chart.js/node_modules/moment/locale/fr-ch.js",
+	"./fr.js": "../../../../chart.js/node_modules/moment/locale/fr.js",
+	"./fy": "../../../../chart.js/node_modules/moment/locale/fy.js",
+	"./fy.js": "../../../../chart.js/node_modules/moment/locale/fy.js",
+	"./gd": "../../../../chart.js/node_modules/moment/locale/gd.js",
+	"./gd.js": "../../../../chart.js/node_modules/moment/locale/gd.js",
+	"./gl": "../../../../chart.js/node_modules/moment/locale/gl.js",
+	"./gl.js": "../../../../chart.js/node_modules/moment/locale/gl.js",
+	"./gom-latn": "../../../../chart.js/node_modules/moment/locale/gom-latn.js",
+	"./gom-latn.js": "../../../../chart.js/node_modules/moment/locale/gom-latn.js",
+	"./he": "../../../../chart.js/node_modules/moment/locale/he.js",
+	"./he.js": "../../../../chart.js/node_modules/moment/locale/he.js",
+	"./hi": "../../../../chart.js/node_modules/moment/locale/hi.js",
+	"./hi.js": "../../../../chart.js/node_modules/moment/locale/hi.js",
+	"./hr": "../../../../chart.js/node_modules/moment/locale/hr.js",
+	"./hr.js": "../../../../chart.js/node_modules/moment/locale/hr.js",
+	"./hu": "../../../../chart.js/node_modules/moment/locale/hu.js",
+	"./hu.js": "../../../../chart.js/node_modules/moment/locale/hu.js",
+	"./hy-am": "../../../../chart.js/node_modules/moment/locale/hy-am.js",
+	"./hy-am.js": "../../../../chart.js/node_modules/moment/locale/hy-am.js",
+	"./id": "../../../../chart.js/node_modules/moment/locale/id.js",
+	"./id.js": "../../../../chart.js/node_modules/moment/locale/id.js",
+	"./is": "../../../../chart.js/node_modules/moment/locale/is.js",
+	"./is.js": "../../../../chart.js/node_modules/moment/locale/is.js",
+	"./it": "../../../../chart.js/node_modules/moment/locale/it.js",
+	"./it.js": "../../../../chart.js/node_modules/moment/locale/it.js",
+	"./ja": "../../../../chart.js/node_modules/moment/locale/ja.js",
+	"./ja.js": "../../../../chart.js/node_modules/moment/locale/ja.js",
+	"./jv": "../../../../chart.js/node_modules/moment/locale/jv.js",
+	"./jv.js": "../../../../chart.js/node_modules/moment/locale/jv.js",
+	"./ka": "../../../../chart.js/node_modules/moment/locale/ka.js",
+	"./ka.js": "../../../../chart.js/node_modules/moment/locale/ka.js",
+	"./kk": "../../../../chart.js/node_modules/moment/locale/kk.js",
+	"./kk.js": "../../../../chart.js/node_modules/moment/locale/kk.js",
+	"./km": "../../../../chart.js/node_modules/moment/locale/km.js",
+	"./km.js": "../../../../chart.js/node_modules/moment/locale/km.js",
+	"./kn": "../../../../chart.js/node_modules/moment/locale/kn.js",
+	"./kn.js": "../../../../chart.js/node_modules/moment/locale/kn.js",
+	"./ko": "../../../../chart.js/node_modules/moment/locale/ko.js",
+	"./ko.js": "../../../../chart.js/node_modules/moment/locale/ko.js",
+	"./ky": "../../../../chart.js/node_modules/moment/locale/ky.js",
+	"./ky.js": "../../../../chart.js/node_modules/moment/locale/ky.js",
+	"./lb": "../../../../chart.js/node_modules/moment/locale/lb.js",
+	"./lb.js": "../../../../chart.js/node_modules/moment/locale/lb.js",
+	"./lo": "../../../../chart.js/node_modules/moment/locale/lo.js",
+	"./lo.js": "../../../../chart.js/node_modules/moment/locale/lo.js",
+	"./lt": "../../../../chart.js/node_modules/moment/locale/lt.js",
+	"./lt.js": "../../../../chart.js/node_modules/moment/locale/lt.js",
+	"./lv": "../../../../chart.js/node_modules/moment/locale/lv.js",
+	"./lv.js": "../../../../chart.js/node_modules/moment/locale/lv.js",
+	"./me": "../../../../chart.js/node_modules/moment/locale/me.js",
+	"./me.js": "../../../../chart.js/node_modules/moment/locale/me.js",
+	"./mi": "../../../../chart.js/node_modules/moment/locale/mi.js",
+	"./mi.js": "../../../../chart.js/node_modules/moment/locale/mi.js",
+	"./mk": "../../../../chart.js/node_modules/moment/locale/mk.js",
+	"./mk.js": "../../../../chart.js/node_modules/moment/locale/mk.js",
+	"./ml": "../../../../chart.js/node_modules/moment/locale/ml.js",
+	"./ml.js": "../../../../chart.js/node_modules/moment/locale/ml.js",
+	"./mr": "../../../../chart.js/node_modules/moment/locale/mr.js",
+	"./mr.js": "../../../../chart.js/node_modules/moment/locale/mr.js",
+	"./ms": "../../../../chart.js/node_modules/moment/locale/ms.js",
+	"./ms-my": "../../../../chart.js/node_modules/moment/locale/ms-my.js",
+	"./ms-my.js": "../../../../chart.js/node_modules/moment/locale/ms-my.js",
+	"./ms.js": "../../../../chart.js/node_modules/moment/locale/ms.js",
+	"./my": "../../../../chart.js/node_modules/moment/locale/my.js",
+	"./my.js": "../../../../chart.js/node_modules/moment/locale/my.js",
+	"./nb": "../../../../chart.js/node_modules/moment/locale/nb.js",
+	"./nb.js": "../../../../chart.js/node_modules/moment/locale/nb.js",
+	"./ne": "../../../../chart.js/node_modules/moment/locale/ne.js",
+	"./ne.js": "../../../../chart.js/node_modules/moment/locale/ne.js",
+	"./nl": "../../../../chart.js/node_modules/moment/locale/nl.js",
+	"./nl-be": "../../../../chart.js/node_modules/moment/locale/nl-be.js",
+	"./nl-be.js": "../../../../chart.js/node_modules/moment/locale/nl-be.js",
+	"./nl.js": "../../../../chart.js/node_modules/moment/locale/nl.js",
+	"./nn": "../../../../chart.js/node_modules/moment/locale/nn.js",
+	"./nn.js": "../../../../chart.js/node_modules/moment/locale/nn.js",
+	"./pa-in": "../../../../chart.js/node_modules/moment/locale/pa-in.js",
+	"./pa-in.js": "../../../../chart.js/node_modules/moment/locale/pa-in.js",
+	"./pl": "../../../../chart.js/node_modules/moment/locale/pl.js",
+	"./pl.js": "../../../../chart.js/node_modules/moment/locale/pl.js",
+	"./pt": "../../../../chart.js/node_modules/moment/locale/pt.js",
+	"./pt-br": "../../../../chart.js/node_modules/moment/locale/pt-br.js",
+	"./pt-br.js": "../../../../chart.js/node_modules/moment/locale/pt-br.js",
+	"./pt.js": "../../../../chart.js/node_modules/moment/locale/pt.js",
+	"./ro": "../../../../chart.js/node_modules/moment/locale/ro.js",
+	"./ro.js": "../../../../chart.js/node_modules/moment/locale/ro.js",
+	"./ru": "../../../../chart.js/node_modules/moment/locale/ru.js",
+	"./ru.js": "../../../../chart.js/node_modules/moment/locale/ru.js",
+	"./sd": "../../../../chart.js/node_modules/moment/locale/sd.js",
+	"./sd.js": "../../../../chart.js/node_modules/moment/locale/sd.js",
+	"./se": "../../../../chart.js/node_modules/moment/locale/se.js",
+	"./se.js": "../../../../chart.js/node_modules/moment/locale/se.js",
+	"./si": "../../../../chart.js/node_modules/moment/locale/si.js",
+	"./si.js": "../../../../chart.js/node_modules/moment/locale/si.js",
+	"./sk": "../../../../chart.js/node_modules/moment/locale/sk.js",
+	"./sk.js": "../../../../chart.js/node_modules/moment/locale/sk.js",
+	"./sl": "../../../../chart.js/node_modules/moment/locale/sl.js",
+	"./sl.js": "../../../../chart.js/node_modules/moment/locale/sl.js",
+	"./sq": "../../../../chart.js/node_modules/moment/locale/sq.js",
+	"./sq.js": "../../../../chart.js/node_modules/moment/locale/sq.js",
+	"./sr": "../../../../chart.js/node_modules/moment/locale/sr.js",
+	"./sr-cyrl": "../../../../chart.js/node_modules/moment/locale/sr-cyrl.js",
+	"./sr-cyrl.js": "../../../../chart.js/node_modules/moment/locale/sr-cyrl.js",
+	"./sr.js": "../../../../chart.js/node_modules/moment/locale/sr.js",
+	"./ss": "../../../../chart.js/node_modules/moment/locale/ss.js",
+	"./ss.js": "../../../../chart.js/node_modules/moment/locale/ss.js",
+	"./sv": "../../../../chart.js/node_modules/moment/locale/sv.js",
+	"./sv.js": "../../../../chart.js/node_modules/moment/locale/sv.js",
+	"./sw": "../../../../chart.js/node_modules/moment/locale/sw.js",
+	"./sw.js": "../../../../chart.js/node_modules/moment/locale/sw.js",
+	"./ta": "../../../../chart.js/node_modules/moment/locale/ta.js",
+	"./ta.js": "../../../../chart.js/node_modules/moment/locale/ta.js",
+	"./te": "../../../../chart.js/node_modules/moment/locale/te.js",
+	"./te.js": "../../../../chart.js/node_modules/moment/locale/te.js",
+	"./tet": "../../../../chart.js/node_modules/moment/locale/tet.js",
+	"./tet.js": "../../../../chart.js/node_modules/moment/locale/tet.js",
+	"./th": "../../../../chart.js/node_modules/moment/locale/th.js",
+	"./th.js": "../../../../chart.js/node_modules/moment/locale/th.js",
+	"./tl-ph": "../../../../chart.js/node_modules/moment/locale/tl-ph.js",
+	"./tl-ph.js": "../../../../chart.js/node_modules/moment/locale/tl-ph.js",
+	"./tlh": "../../../../chart.js/node_modules/moment/locale/tlh.js",
+	"./tlh.js": "../../../../chart.js/node_modules/moment/locale/tlh.js",
+	"./tr": "../../../../chart.js/node_modules/moment/locale/tr.js",
+	"./tr.js": "../../../../chart.js/node_modules/moment/locale/tr.js",
+	"./tzl": "../../../../chart.js/node_modules/moment/locale/tzl.js",
+	"./tzl.js": "../../../../chart.js/node_modules/moment/locale/tzl.js",
+	"./tzm": "../../../../chart.js/node_modules/moment/locale/tzm.js",
+	"./tzm-latn": "../../../../chart.js/node_modules/moment/locale/tzm-latn.js",
+	"./tzm-latn.js": "../../../../chart.js/node_modules/moment/locale/tzm-latn.js",
+	"./tzm.js": "../../../../chart.js/node_modules/moment/locale/tzm.js",
+	"./uk": "../../../../chart.js/node_modules/moment/locale/uk.js",
+	"./uk.js": "../../../../chart.js/node_modules/moment/locale/uk.js",
+	"./ur": "../../../../chart.js/node_modules/moment/locale/ur.js",
+	"./ur.js": "../../../../chart.js/node_modules/moment/locale/ur.js",
+	"./uz": "../../../../chart.js/node_modules/moment/locale/uz.js",
+	"./uz-latn": "../../../../chart.js/node_modules/moment/locale/uz-latn.js",
+	"./uz-latn.js": "../../../../chart.js/node_modules/moment/locale/uz-latn.js",
+	"./uz.js": "../../../../chart.js/node_modules/moment/locale/uz.js",
+	"./vi": "../../../../chart.js/node_modules/moment/locale/vi.js",
+	"./vi.js": "../../../../chart.js/node_modules/moment/locale/vi.js",
+	"./x-pseudo": "../../../../chart.js/node_modules/moment/locale/x-pseudo.js",
+	"./x-pseudo.js": "../../../../chart.js/node_modules/moment/locale/x-pseudo.js",
+	"./yo": "../../../../chart.js/node_modules/moment/locale/yo.js",
+	"./yo.js": "../../../../chart.js/node_modules/moment/locale/yo.js",
+	"./zh-cn": "../../../../chart.js/node_modules/moment/locale/zh-cn.js",
+	"./zh-cn.js": "../../../../chart.js/node_modules/moment/locale/zh-cn.js",
+	"./zh-hk": "../../../../chart.js/node_modules/moment/locale/zh-hk.js",
+	"./zh-hk.js": "../../../../chart.js/node_modules/moment/locale/zh-hk.js",
+	"./zh-tw": "../../../../chart.js/node_modules/moment/locale/zh-tw.js",
+	"./zh-tw.js": "../../../../chart.js/node_modules/moment/locale/zh-tw.js"
+};
+function webpackContext(req) {
+	return __webpack_require__(webpackContextResolve(req));
+};
+function webpackContextResolve(req) {
+	var id = map[req];
+	if(!(id + 1)) // check for number or string
+		throw new Error("Cannot find module '" + req + "'.");
+	return id;
+};
+webpackContext.keys = function webpackContextKeys() {
+	return Object.keys(map);
+};
+webpackContext.resolve = webpackContextResolve;
+module.exports = webpackContext;
+webpackContext.id = "../../../../chart.js/node_modules/moment/locale recursive ^\\.\\/.*$";
 
 /***/ }),
 
@@ -307,6 +638,8 @@ var map = {
 	"./be.js": "../../../../moment/locale/be.js",
 	"./bg": "../../../../moment/locale/bg.js",
 	"./bg.js": "../../../../moment/locale/bg.js",
+	"./bm": "../../../../moment/locale/bm.js",
+	"./bm.js": "../../../../moment/locale/bm.js",
 	"./bn": "../../../../moment/locale/bn.js",
 	"./bn.js": "../../../../moment/locale/bn.js",
 	"./bo": "../../../../moment/locale/bo.js",
@@ -350,6 +683,8 @@ var map = {
 	"./es": "../../../../moment/locale/es.js",
 	"./es-do": "../../../../moment/locale/es-do.js",
 	"./es-do.js": "../../../../moment/locale/es-do.js",
+	"./es-us": "../../../../moment/locale/es-us.js",
+	"./es-us.js": "../../../../moment/locale/es-us.js",
 	"./es.js": "../../../../moment/locale/es.js",
 	"./et": "../../../../moment/locale/et.js",
 	"./et.js": "../../../../moment/locale/et.js",
@@ -375,6 +710,8 @@ var map = {
 	"./gl.js": "../../../../moment/locale/gl.js",
 	"./gom-latn": "../../../../moment/locale/gom-latn.js",
 	"./gom-latn.js": "../../../../moment/locale/gom-latn.js",
+	"./gu": "../../../../moment/locale/gu.js",
+	"./gu.js": "../../../../moment/locale/gu.js",
 	"./he": "../../../../moment/locale/he.js",
 	"./he.js": "../../../../moment/locale/he.js",
 	"./hi": "../../../../moment/locale/hi.js",
