@@ -38,7 +38,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/app.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<!--The content below is only a placeholder and can be replaced.-->\n<div style=\"text-align:center\">\n  <h1>\n    USD/BITCOIN\n  </h1>\n  <div id=\"currentValue\">\n\n    {{currentValue}}---{{variation}}\n\n\n  </div>\n  <div style=\"display:inline-block\">\n    <canvas id=\"bitcoinChart\" baseChart [datasets]=\"lineChartData\" [labels]=\"lineChartLabels\" [options]=\"lineChartOptions\" [colors]=\"lineChartColors\"\n      [legend]=\"lineChartLegend\" [chartType]=\"lineChartType\" (chartHover)=\"chartHovered($event)\" (chartClick)=\"chartClicked($event)\"></canvas>\n  </div>\n\n\n</div>        "
+module.exports = "<div>\r\n  <h1 class=\"title\">\r\n    USD/BITCOIN\r\n  </h1>\r\n  <div class=\"yesterdayValue\">\r\n      Value Yesterday {{yesterdayValue | number:'3.2-2'}}\r\n    </div>\r\n  <div class=\"currentValue\">\r\n    {{currentValue}}\r\n  </div>\r\n  <div class=\"variation\" *ngIf=\"variation\" [ngClass]=\"{'positive': positiveVariation, 'negative': !positiveVariation}\">\r\n    {{variation | number:'1.2-2'}}% <div *ngIf=\"positiveVariation\" class=\"myicon\"><i class=\"fa fa-caret-up fa-lg\" aria-hidden=\"true\"></i></div>\r\n          <div *ngIf=\"!positiveVariation\" class=\"myicon\"><i class=\"fa fa-caret-down fa-lg\" aria-hidden=\"true\"></i></div>\r\n  </div>\r\n    <canvas class=\"chart\" \r\n          baseChart [datasets]=\"lineChartData\" \r\n          [labels]=\"lineChartLabels\" \r\n          [options]=\"lineChartOptions\" \r\n          [colors]=\"lineChartColors\"\r\n          [legend]=\"lineChartLegend\" \r\n          [chartType]=\"lineChartType\" \r\n          (chartHover)=\"chartHovered($event)\" \r\n          (chartClick)=\"chartClicked($event)\">\r\n    </canvas>\r\n  \r\n</div>        "
 
 /***/ }),
 
@@ -51,8 +51,10 @@ module.exports = "<!--The content below is only a placeholder and can be replace
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__app_services_bitcoin_service__ = __webpack_require__("../../../../../src/app/services/bitcoin.service.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map__ = __webpack_require__("../../../../rxjs/add/operator/map.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_Rx__ = __webpack_require__("../../../../rxjs/Rx.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_Rx___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_rxjs_Rx__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_moment__ = __webpack_require__("../../../../moment/moment.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_moment___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_moment__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_Rx__ = __webpack_require__("../../../../rxjs/Rx.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_Rx___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_rxjs_Rx__);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -66,6 +68,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 var AppComponent = (function () {
     function AppComponent(bitcoinService) {
         this.bitcoinService = bitcoinService;
@@ -73,7 +76,7 @@ var AppComponent = (function () {
         this.arrayValues = [];
         this.lineChartColors = [
             {
-                backgroundColor: 'red',
+                backgroundColor: '#DD5A3E',
                 borderColor: 'rgba(148,159,177,1)',
                 pointBackgroundColor: 'rgba(148,159,177,1)',
                 pointBorderColor: '#fff',
@@ -95,45 +98,47 @@ var AppComponent = (function () {
                 label: ""
             }
         ];
+        this.positiveVariation = true;
     }
     AppComponent.prototype.ngOnInit = function () {
         this.getHistoric();
-        this.getCurrent();
+        this.getCurrent(1);
+        this.activateTimer();
     };
-    AppComponent.prototype.getCurrent = function () {
+    AppComponent.prototype.getCurrent = function (val) {
         var _this = this;
-        var source = __WEBPACK_IMPORTED_MODULE_3_rxjs_Rx__["Observable"]
+        this.bitcoinService.getCurrentValue().subscribe(function (data) {
+            _this.updateChart(data, val);
+            _this.updateBpiValue(data);
+            _this.updateVariation(data);
+        });
+    };
+    AppComponent.prototype.activateTimer = function () {
+        var _this = this;
+        var source = __WEBPACK_IMPORTED_MODULE_4_rxjs_Rx__["Observable"]
             .interval(this.timer)
             .timeInterval();
         var subscription = source.subscribe(function (val) {
-            _this.bitcoinService.getCurrentValue().subscribe(function (data) {
-                _this.updateChart(data, val);
-                _this.updateBpiValue(data);
-            });
+            _this.getCurrent(val.value);
         });
     };
+    AppComponent.prototype.updateVariation = function (data) {
+        var diff = this.currentValue - this.yesterdayValue;
+        this.positiveVariation = diff > 0;
+        this.variation = this.yesterdayValue / this.currentValue;
+    };
     AppComponent.prototype.getHistoric = function () {
+        var _this = this;
         this.bitcoinService.getHistoric().subscribe(function (data) {
-            /*const _lineChartData: Array<any> = new Array(val.value + 1);
-            arrayValues.push(parseFloat(data.bpi.USD.rate.replace(",", "")));
-            const date = new Date();
-            _lineChartData[0] = {data: new Array(val.value + 1), label: "BitCoin/USD  " + date.toDateString()};
-            for (let i = 0; i < arrayValues.length; i++) {
-              _lineChartData[0].data[i] = arrayValues[i];
-            }
-            this.lineChartData = _lineChartData;
-    
-            this.lineChartLabels.push(date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds());
-            */
-            //        console.log("££££££££££££££££££££££££££££££££££££££££££££££££££££££");
-            //        console.log(data.bpi);
+            var yesterday = __WEBPACK_IMPORTED_MODULE_3_moment__(new Date()).add(-1, "days").format("YYYY-MM-DD");
+            _this.yesterdayValue = data.bpi[yesterday.toString()];
         });
     };
     AppComponent.prototype.updateChart = function (data, val) {
-        var _lineChartData = new Array(val.value + 1);
+        var _lineChartData = new Array(val + 1);
         this.arrayValues.push(this.getFloatValue(data));
         var date = new Date();
-        _lineChartData[0] = { data: new Array(val.value + 1), label: "BitCoin/USD  " + date.toDateString() };
+        _lineChartData[0] = { data: new Array(val + 1), label: "BitCoin/USD  " + date.toDateString() };
         for (var i = 0; i < this.arrayValues.length; i++) {
             _lineChartData[0].data[i] = this.arrayValues[i];
         }
@@ -142,11 +147,6 @@ var AppComponent = (function () {
     };
     AppComponent.prototype.updateBpiValue = function (data) {
         this.currentValue = this.getFloatValue(data);
-        var lastValue = this.arrayValues[this.arrayValues.length - 2];
-        var change = this.currentValue / lastValue;
-        if (change !== 1) {
-            this.variation = change;
-        }
     };
     AppComponent.prototype.getFloatValue = function (data) {
         return parseFloat(data.USD.last);
@@ -234,7 +234,7 @@ exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-b
 
 
 // module
-exports.push([module.i, ":host {\n  background-color: blue;\n  display: block;\n  width: 100%;\n\n}\n\ndiv {\n  -webkit-animation: load8 1.1s infinite linear;\n          animation: load8 1.1s infinite linear;\n  border-bottom: 1.1em solid rgba(255, 255, 255, 0.2);\n  border-left: 1.1em solid #fff;\n  border-right: 1.1em solid rgba(255, 255, 255, 0.2);\n  border-top: 1.1em solid rgba(255, 255, 255, 0.2);\n  font-size: 10px;\n  margin: 20px auto;\n  position: relative;\n  text-indent: -9999em;\n  -webkit-transform: translateZ(0);\n          transform: translateZ(0);\n}\n\ndiv,\ndiv:after {\n  border-radius: 50%;\n  height: 5em;\n  width: 5em;\n}\n\n@-webkit-keyframes load8 {\n  0% {\n    -webkit-transform: rotate(0deg);\n            transform: rotate(0deg);\n  }\n  100% {\n    -webkit-transform: rotate(360deg);\n            transform: rotate(360deg);\n  }\n}\n\n@keyframes load8 {\n  0% {\n    -webkit-transform: rotate(0deg);\n            transform: rotate(0deg);\n  }\n  100% {\n    -webkit-transform: rotate(360deg);\n            transform: rotate(360deg);\n  }\n}\n\n", ""]);
+exports.push([module.i, ":host {\r\n  background-color: blue;\r\n  display: block;\r\n  width: 100%;\r\n\r\n}\r\n\r\ndiv {\r\n  -webkit-animation: load8 1.1s infinite linear;\r\n          animation: load8 1.1s infinite linear;\r\n  border-bottom: 1.1em solid rgba(255, 255, 255, 0.2);\r\n  border-left: 1.1em solid #fff;\r\n  border-right: 1.1em solid rgba(255, 255, 255, 0.2);\r\n  border-top: 1.1em solid rgba(255, 255, 255, 0.2);\r\n  font-size: 10px;\r\n  margin: 20px auto;\r\n  position: relative;\r\n  text-indent: -9999em;\r\n  -webkit-transform: translateZ(0);\r\n          transform: translateZ(0);\r\n}\r\n\r\ndiv,\r\ndiv:after {\r\n  border-radius: 50%;\r\n  height: 5em;\r\n  width: 5em;\r\n}\r\n\r\n@-webkit-keyframes load8 {\r\n  0% {\r\n    -webkit-transform: rotate(0deg);\r\n            transform: rotate(0deg);\r\n  }\r\n  100% {\r\n    -webkit-transform: rotate(360deg);\r\n            transform: rotate(360deg);\r\n  }\r\n}\r\n\r\n@keyframes load8 {\r\n  0% {\r\n    -webkit-transform: rotate(0deg);\r\n            transform: rotate(0deg);\r\n  }\r\n  100% {\r\n    -webkit-transform: rotate(360deg);\r\n            transform: rotate(360deg);\r\n  }\r\n}\r\n\r\n", ""]);
 
 // exports
 
@@ -281,8 +281,6 @@ SpinnerComponent = __decorate([
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return BitcoinService; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/@angular/core.es5.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_http__ = __webpack_require__("../../../http/@angular/http.es5.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_moment__ = __webpack_require__("../../../../moment/moment.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_moment___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_moment__);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -292,7 +290,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-
 
 
 var BitcoinService = (function () {
@@ -305,12 +302,8 @@ var BitcoinService = (function () {
             .map(function (res) { return res.json(); });
     };
     BitcoinService.prototype.getHistoric = function () {
-        var now = __WEBPACK_IMPORTED_MODULE_2_moment__(); // add this 2 of 4
-        var url = 'https://api.coindesk.com/v1/bpi/historical/close.json?start=' + now.subtract(30, 'days') + '&end='
-            + now;
-        var url2 = 'https://api.coindesk.com/v1/bpi/historical/close.json?start=2017-10-01&end=2017-10-26';
-        //        console.log(url);
-        return this.http.get(url2)
+        var url = 'https://api.coindesk.com/v1/bpi/historical/close.json';
+        return this.http.get(url)
             .map(function (res) { return res.json(); });
     };
     return BitcoinService;
