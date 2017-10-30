@@ -38,7 +38,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/app.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div>\r\n  <h1 class=\"title\">\r\n    USD/BITCOIN\r\n  </h1>\r\n  <div class=\"yesterdayValue\">\r\n      Value Yesterday {{yesterdayValue | number:'3.2-2'}}\r\n    </div>\r\n  <div class=\"currentValue\">\r\n    {{currentValue}}\r\n  </div>\r\n  <div class=\"variation\" *ngIf=\"variation\" [ngClass]=\"{'positive': positiveVariation, 'negative': !positiveVariation}\">\r\n    {{variation | number:'1.2-2'}}% <div *ngIf=\"positiveVariation\" class=\"myicon\"><i class=\"fa fa-caret-up fa-lg\" aria-hidden=\"true\"></i></div>\r\n          <div *ngIf=\"!positiveVariation\" class=\"myicon\"><i class=\"fa fa-caret-down fa-lg\" aria-hidden=\"true\"></i></div>\r\n  </div>\r\n    <canvas class=\"chart\" \r\n          baseChart [datasets]=\"lineChartData\" \r\n          [labels]=\"lineChartLabels\" \r\n          [options]=\"lineChartOptions\" \r\n          [colors]=\"lineChartColors\"\r\n          [legend]=\"lineChartLegend\" \r\n          [chartType]=\"lineChartType\" \r\n          (chartHover)=\"chartHovered($event)\" \r\n          (chartClick)=\"chartClicked($event)\">\r\n    </canvas>\r\n  \r\n</div>        "
+module.exports = "<div>\n  <h1 class=\"title\">\n    USD/BITCOIN\n  </h1>\n  <div>\n    <div class=\"yesterdayValue\">\n        Value yesterday {{yesterdayValue | number:'3.2-2'}}\n    </div>\n    <div class=\"currentValue\">\n      Current value {{currentValue}}\n    </div>\n    <div class=\"variation\" *ngIf=\"variation\" [ngClass]=\"{'positive': positiveVariation, 'negative': !positiveVariation}\">\n      {{variation | number:'1.2-2'}}% <div *ngIf=\"positiveVariation\" class=\"myicon\"><i class=\"fa fa-caret-up fa-lg\" aria-hidden=\"true\"></i></div>\n            <div *ngIf=\"!positiveVariation\" class=\"myicon\"><i class=\"fa fa-caret-down fa-lg\" aria-hidden=\"true\"></i></div>\n    </div>\n  </div>\n  <canvas class=\"chart\" \n          baseChart [datasets]=\"lineChartData\" \n          [labels]=\"lineChartLabels\" \n          [options]=\"lineChartOptions\" \n          [colors]=\"lineChartColors\"\n          [legend]=\"lineChartLegend\" \n          [chartType]=\"lineChartType\" \n          (chartHover)=\"chartHovered($event)\" \n          (chartClick)=\"chartClicked($event)\">\n  </canvas>\n  \n</div>        "
 
 /***/ }),
 
@@ -123,9 +123,9 @@ var AppComponent = (function () {
         });
     };
     AppComponent.prototype.updateVariation = function (data) {
-        var diff = this.currentValue - this.yesterdayValue;
-        this.positiveVariation = diff > 0;
-        this.variation = this.yesterdayValue / this.currentValue;
+        var diff = this.yesterdayValue - this.currentValue;
+        this.positiveVariation = diff < 0;
+        this.variation = Math.abs(diff / this.yesterdayValue * 100);
     };
     AppComponent.prototype.getHistoric = function () {
         var _this = this;
@@ -187,14 +187,12 @@ var _a;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_ng2_charts___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_ng2_charts__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__app_component__ = __webpack_require__("../../../../../src/app/app.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__services_bitcoin_service__ = __webpack_require__("../../../../../src/app/services/bitcoin.service.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__commons_spinner_spinner__ = __webpack_require__("../../../../../src/app/commons/spinner/spinner.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-
 
 
 
@@ -210,7 +208,6 @@ AppModule = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["NgModule"])({
         declarations: [
             __WEBPACK_IMPORTED_MODULE_4__app_component__["a" /* AppComponent */],
-            __WEBPACK_IMPORTED_MODULE_6__commons_spinner_spinner__["a" /* SpinnerComponent */]
         ],
         imports: [
             __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__["a" /* BrowserModule */],
@@ -223,54 +220,6 @@ AppModule = __decorate([
 ], AppModule);
 
 //# sourceMappingURL=app.module.js.map
-
-/***/ }),
-
-/***/ "../../../../../src/app/commons/spinner/spinner.css":
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-base.js")(false);
-// imports
-
-
-// module
-exports.push([module.i, ":host {\r\n  background-color: blue;\r\n  display: block;\r\n  width: 100%;\r\n\r\n}\r\n\r\ndiv {\r\n  -webkit-animation: load8 1.1s infinite linear;\r\n          animation: load8 1.1s infinite linear;\r\n  border-bottom: 1.1em solid rgba(255, 255, 255, 0.2);\r\n  border-left: 1.1em solid #fff;\r\n  border-right: 1.1em solid rgba(255, 255, 255, 0.2);\r\n  border-top: 1.1em solid rgba(255, 255, 255, 0.2);\r\n  font-size: 10px;\r\n  margin: 20px auto;\r\n  position: relative;\r\n  text-indent: -9999em;\r\n  -webkit-transform: translateZ(0);\r\n          transform: translateZ(0);\r\n}\r\n\r\ndiv,\r\ndiv:after {\r\n  border-radius: 50%;\r\n  height: 5em;\r\n  width: 5em;\r\n}\r\n\r\n@-webkit-keyframes load8 {\r\n  0% {\r\n    -webkit-transform: rotate(0deg);\r\n            transform: rotate(0deg);\r\n  }\r\n  100% {\r\n    -webkit-transform: rotate(360deg);\r\n            transform: rotate(360deg);\r\n  }\r\n}\r\n\r\n@keyframes load8 {\r\n  0% {\r\n    -webkit-transform: rotate(0deg);\r\n            transform: rotate(0deg);\r\n  }\r\n  100% {\r\n    -webkit-transform: rotate(360deg);\r\n            transform: rotate(360deg);\r\n  }\r\n}\r\n\r\n", ""]);
-
-// exports
-
-
-/*** EXPORTS FROM exports-loader ***/
-module.exports = module.exports.toString();
-
-/***/ }),
-
-/***/ "../../../../../src/app/commons/spinner/spinner.ts":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return SpinnerComponent; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/@angular/core.es5.js");
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-
-var SpinnerComponent = (function () {
-    function SpinnerComponent() {
-    }
-    return SpinnerComponent;
-}());
-SpinnerComponent = __decorate([
-    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
-        selector: 'app-spinner',
-        template: "<div></div>",
-        styles: [__webpack_require__("../../../../../src/app/commons/spinner/spinner.css")],
-    })
-], SpinnerComponent);
-
-//# sourceMappingURL=spinner.js.map
 
 /***/ }),
 
